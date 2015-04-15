@@ -2,7 +2,7 @@
 
 from gi.repository import Gtk, GLib, Gdk
 import cgi
-from i3dstatus.utils import get_config, make_block
+from k5dstatus.utils import get_config, make_block
 
 config = get_config('clipboard')
 

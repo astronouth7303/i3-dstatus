@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import time
-from i3dstatus.utils import get_config, make_block
+from k5dstatus.utils import get_config, make_block
 
 config = get_config('clock')
 

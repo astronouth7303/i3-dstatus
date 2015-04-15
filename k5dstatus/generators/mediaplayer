@@ -7,9 +7,9 @@ from gi.repository import Gio, GLib
 
 
 def show_block(conn, block):
-    bus_name = 'com.dubstepdish.i3dstatus'
-    object_path = '/com/dubstepdish/i3dstatus'
-    interface_name = 'com.dubstepdish.i3dstatus.Manager'
+    bus_name = 'com.astro73.k5dstatus'
+    object_path = '/com/astro73/k5dstatus'
+    interface_name = 'com.astro73.k5dstatus.Manager'
     method_name = 'show_block'
     # XXX only allows strings - should be a{sv}
     parameters = GLib.Variant('(a{ss})', (block,))
@@ -28,11 +28,11 @@ def get_config(conn):
     # XXX: I was trying to do this purely with GIO as a reference, but it seems
     # not to support a lot of the things we need, so I'll mix the apis for now
     # and rewrite later.
-    i3dstatus = dbus.Interface(dbus.SessionBus().get_object(
-                               'com.dubstepdish.i3dstatus',
-                               '/com/dubstepdish/i3dstatus'),
-                               'com.dubstepdish.i3dstatus')
-    return json.loads(i3dstatus.get_config('mediaplayer'))
+    k5dstatus = dbus.Interface(dbus.SessionBus().get_object(
+                               'com.astro73.k5dstatus',
+                               '/com/astro73/k5dstatus'),
+                               'com.astro73.k5dstatus')
+    return json.loads(k5dstatus.get_config('mediaplayer'))
 
 
 def properties_changed_callback(conn, sender_name, object_path,

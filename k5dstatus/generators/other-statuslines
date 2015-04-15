@@ -7,14 +7,14 @@ import sys
 import dbus
 from threading import Thread
 
-i3dstatus = dbus.Interface(dbus.SessionBus().get_object(
-                           'com.dubstepdish.i3dstatus',
-                           '/com/dubstepdish/i3dstatus'),
-                           'com.dubstepdish.i3dstatus.Manager')
+k5dstatus = dbus.Interface(dbus.SessionBus().get_object(
+                           'com.astro73.k5dstatus',
+                           '/com/astro73/k5dstatus'),
+                           'com.astro73.k5dstatus.Manager')
 
 statuslines = ['i3status']
 
-config = i3dstatus.get_config('other-statuslines')
+config = k5dstatus.get_config('other-statuslines')
 
 if 'statuslines' in config:
     if isinstance(config, str):
@@ -51,7 +51,7 @@ class OtherStatusline(Thread):
                 elif event == 'end_map':
                     # XXX: we probably need a method to show more than one
                     # block
-                    i3dstatus.show_block(block)
+                    k5dstatus.show_block(block)
 
 for statusline in statuslines:
     OtherStatusline(statusline).start()

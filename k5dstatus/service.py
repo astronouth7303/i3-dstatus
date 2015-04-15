@@ -7,8 +7,8 @@ import threading
 import xml.etree.ElementTree as etree
 from aioevents import Event
 
-DBUS_SERVICE = 'com.dubstepdish.i3dstatus'
-PATH_PREFIX = '/com/dubstepdish/i3dstatus'
+DBUS_SERVICE = 'com.astro73.k5dstatus'
+PATH_PREFIX = '/com/astro73/k5dstatus'
 
 
 class BlockManager(dbus.service.Object):
@@ -17,7 +17,7 @@ class BlockManager(dbus.service.Object):
 
     FIXME: Implement org.freedesktop.DBus.ObjectManager
     """
-    INTERFACE = 'com.dubstepdish.i3dstatus.Manager'
+    INTERFACE = 'com.astro73.k5dstatus.Manager'
 
     blockchanged = Event("Fires when one of the managed blocks changes.")
     blockadded = Event("Fires when a new block is added.")
@@ -97,7 +97,7 @@ class Block(dbus.service.Object):
 
     FIXME: Implement org.freedesktop.DBus.Properties
     """
-    INTERFACE = 'com.dubstepdish.i3dstatus.Block'
+    INTERFACE = 'com.astro73.k5dstatus.Block'
     PROPINTERFACE = 'org.freedesktop.DBus.Properties'
     __properties__ = {
         'full_text' : ('s', lambda v: isinstance(v, str)),

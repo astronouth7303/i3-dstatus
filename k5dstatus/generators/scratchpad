@@ -2,7 +2,7 @@
 
 import i3ipc
 import cgi
-from i3dstatus.utils import get_config, make_block
+from k5dstatus.utils import get_config, make_block
 
 i3 = i3ipc.Connection()
 

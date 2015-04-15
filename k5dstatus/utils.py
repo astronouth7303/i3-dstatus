@@ -7,11 +7,11 @@ __all__ = 'get_config', 'make_block'
 
 
 def get_config(app):
-    i3dstatus = dbus.Interface(
+    k5dstatus = dbus.Interface(
         dbus.SessionBus().get_object(DBUS_SERVICE, PATH_PREFIX),
         BlockManager.INTERFACE
     )
-    return i3dstatus.GetConfig(app)
+    return k5dstatus.GetConfig(app)
 
 
 class make_block:

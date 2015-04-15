@@ -4,14 +4,14 @@ import json
 import os
 from threading import Timer
 
-i3dstatus = dbus.Interface(dbus.SessionBus().get_object(
-                           'com.dubstepdish.i3dstatus',
-                           '/com/dubstepdish/i3dstatus'),
-                           'com.dubstepdish.i3dstatus.Manager')
+k5dstatus = dbus.Interface(dbus.SessionBus().get_object(
+                           'com.astro73.k5dstatus',
+                           '/com/astro73/k5dstatus'),
+                           'com.dubstepdish.k5dstatus.Manager')
 
 disks = {'/': {}}
 
-config = json.loads(i3dstatus.get_config('disk'))
+config = json.loads(k5dstatus.get_config('disk'))
 
 if len(config):
     disks = config
@@ -81,7 +81,7 @@ def on_tick():
         format_str = format_str.replace('%percentage_avail',
                                         str(percentage_avail) + '%')
 
-        i3dstatus.show_block({
+        k5dstatus.show_block({
             "name": "disk",
             "instance": path,
             "full_text": format_str,

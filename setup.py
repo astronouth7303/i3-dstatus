@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='i3-dstatus',
+    name='k5dstatus',
     version='0.0.3',
-    author='Tony Crisci',
-    author_email='tony@dubstepdish.com',
-    url='https://github.com/acrisci/i3-dstatus',
+    author='James Bliss',
+    author_email='astronouth7303',
+    url='https://github.com/astronouth7303/k5dstatus',
     license='BSD',
     description='The ultimate DIY statusline generator for i3',
     long_description=open('README.rst').read(),
@@ -18,9 +18,9 @@ setup(
         'Programming Language :: Python :: 3',
     ],
 
-    package_data={'i3dstatus': ['generators/*']},
+    package_data={'k5dstatus': ['generators/*']},
 
-    scripts=['i3-dstatus'],
+    scripts=['k5-dstatus'],
 
     packages=find_packages(),
 )
