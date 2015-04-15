@@ -6,6 +6,7 @@ import asyncio
 from dbus.mainloop.glib import DBusGMainLoop
 from .service import BlockManager
 from .barproto import BarManager, InputParser
+from .procman import run_from_config
 from .gbulb import gbulb  # Uggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhh
 
 
@@ -14,6 +15,7 @@ def start():
     Orchestrates the start of everything, injects dependencies, sets up event
     loops, and all the other things that need to happen
     """
+    # FIXME: Use actual argument parsing
     # Remap some stuff so we don't corrupt pipes
     i3bar_blocks, sys.stdout = sys.stdout, sys.stderr
     i3bar_input, sys.stdin = sys.stdin, None
@@ -32,6 +34,7 @@ def start():
     blockman = BarManager(i3bar_blocks, manager, config)
     parser = InputParser(i3bar_input, manager, config)
 
+    GLib.idle_add(run_from_config, config, sys.argv[1:])
     # FIXME: Feed blockman, parser coroutines to event loop
 
 
