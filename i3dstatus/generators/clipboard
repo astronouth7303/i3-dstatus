@@ -29,9 +29,9 @@ def on_owner_change(clipboard, event):
 
     if not cb_text:
         # no clipboard, so clear the block
-        block.update({"full_text": ""})
+        block.Update({"full_text": ""})
     else:
-        block.update({
+        block.Update({
             "full_text": format_clipboard_text(cb_text),
             "markup": "pango"
         })

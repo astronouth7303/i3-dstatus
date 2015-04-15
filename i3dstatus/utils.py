@@ -11,7 +11,7 @@ def get_config(app):
         dbus.SessionBus().get_object(DBUS_SERVICE, PATH_PREFIX),
         BlockManager.INTERFACE
     )
-    return i3dstatus.get_config(app)
+    return i3dstatus.GetConfig(app)
 
 
 class make_block:
@@ -34,11 +34,11 @@ class make_block:
         )
 
     def __enter__(self):
-        self.blockpath = bpath = self.service.create_block(self.bid, self.defaults)
+        self.blockpath = bpath = self.service.CreateBlock(self.bid, self.defaults)
         return lambda: dbus.Interface(
             dbus.SessionBus().get_object(DBUS_SERVICE, bpath),
             Block.INTERFACE
         )
 
     def __exit__(self, *_):
-        self.service.remove_block(self.blockpath)
+        self.service.RemoveBlock(self.blockpath)

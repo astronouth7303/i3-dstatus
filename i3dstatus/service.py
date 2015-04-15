@@ -5,7 +5,6 @@ import dbus
 import dbus.service
 import threading
 import xml.etree.ElementTree as etree
-import io
 from aioevents import Event
 
 DBUS_SERVICE = 'com.dubstepdish.i3dstatus'
@@ -36,11 +35,11 @@ class BlockManager(dbus.service.Object):
         self.blockchanged.handler(self.block_changed)
 
     @dbus.service.signal(INTERFACE, signature="o")
-    def block_changed(self, block):
+    def BlockChanged(self, block):
         pass
 
     @dbus.service.method(INTERFACE, in_signature="sa{sv}", out_signature="o")
-    def create_block(self, id, defaults=None):
+    def CreateBlock(self, id, defaults=None):
         """
         Create a block with the given ID and return it.
         """
@@ -61,7 +60,7 @@ class BlockManager(dbus.service.Object):
         return blk
 
     @dbus.service.method(INTERFACE, in_signature="o")
-    def remove_block(self, blockpath):
+    def RemoveBlock(self, blockpath):
         """
         Remove a block.
         """
@@ -80,7 +79,7 @@ class BlockManager(dbus.service.Object):
             yield block
 
     @dbus.service.method(INTERFACE, in_signature='s', out_signature='v')
-    def get_config(self, genname):
+    def GetConfig(self, genname):
         """
         Get a generator's configuration block
         """
@@ -146,25 +145,25 @@ class Block(dbus.service.Object):
         self.update(props)
 
     @dbus.service.signal(INTERFACE, signature="iiu")
-    def click(self, x, y, button):
+    def Click(self, x, y, button):
         pass
 
-    @dbus.service.method(INTERFACE, in_signature='s', out_signature='v')
-    def get(self, name):
-        """
-        Gets a property.
-        """
-        return getattr(self, name)
+    # @dbus.service.method(INTERFACE, in_signature='s', out_signature='v')
+    # def Get(self, name):
+    #     """
+    #     Gets a property.
+    #     """
+    #     return getattr(self, name)
 
-    @dbus.service.method(INTERFACE, in_signature='sv')
-    def set(self, name, value):
-        """
-        Sets a property.
-        """
-        setattr(self, name, value)
+    # @dbus.service.method(INTERFACE, in_signature='sv')
+    # def Set(self, name, value):
+    #     """
+    #     Sets a property.
+    #     """
+    #     setattr(self, name, value)
 
     @dbus.service.method(INTERFACE, in_signature='a{sv}')
-    def update(self, values):
+    def Update(self, values):
         """
         Performs a bulk update of properties. Issues only one changed event for
         the entire update.
@@ -199,14 +198,14 @@ class Block(dbus.service.Object):
         super().__setattr__(name, value)
 
     @dbus.service.method(INTERFACE, in_signature='s', out_signature='v')
-    def get_prop(self, name):
+    def GetProp(self, name):
         """
         Gets a user-defined property.
         """
         return self._props.get(name)
 
     @dbus.service.method(INTERFACE, in_signature='sv')
-    def set_prop(self, name, value):
+    def SetProp(self, name, value):
         """
         Sets a user-defined property.
         """
