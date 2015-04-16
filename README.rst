@@ -61,7 +61,7 @@ Use k5dstatus as your status command in your bar block like so:
 ::
     
     bar {
-        status_command k5dstatus clock
+        status_command k5-dstatus clock
     }
 
 Configuration
