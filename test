@@ -5,8 +5,8 @@
 sleep 1s
 
 dbus-send --print-reply --session --dest=com.astro73.k5dstatus --type=method_call /com/astro73/k5dstatus \
-        com.astro73.k5dstatus.Manager.CreateBlock string:'spam' dict:string:string:full_text,'Spam!'
+        com.astro73.k5dstatus.Manager.CreateBlock dict:string:string:full_text,'Spam!',name,'spam'
 dbus-send --print-reply --session --dest=com.astro73.k5dstatus --type=method_call /com/astro73/k5dstatus \
-        com.astro73.k5dstatus.Manager.CreateBlock string:'eggs' dict:string:string:full_text,'Eggs!'
+        com.astro73.k5dstatus.Manager.CreateBlock dict:string:string:full_text,'Eggs!',name,'eggs'
 
 wait %1
