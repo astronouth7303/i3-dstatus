@@ -25,8 +25,7 @@ class make_block:
     (We use the callable so that if the lookup fails, the finally triggers)
     """
 
-    def __init__(self, bid, defaults=None):
-        self.bid = bid
+    def __init__(self, **defaults):
         self.defaults = defaults or {}
         self.service = dbus.Interface(
             dbus.SessionBus().get_object(DBUS_SERVICE, PATH_PREFIX),
@@ -34,7 +33,7 @@ class make_block:
         )
 
     def __enter__(self):
-        self.blockpath = bpath = self.service.CreateBlock(self.bid, self.defaults)
+        self.blockpath = bpath = self.service.CreateBlock(self.defaults)
         return lambda: dbus.Interface(
             dbus.SessionBus().get_object(DBUS_SERVICE, bpath),
             Block.INTERFACE

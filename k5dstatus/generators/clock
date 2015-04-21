@@ -9,11 +9,8 @@ time_format = config.get('format', '%m/%d <b>%H:%M</b>')
 last_time = ''
 
 with make_block(
-    'clock',
-    {
-        "name": "clock",
-        "markup": "pango"
-    }
+    name="clock",
+    markup="pango",
 ) as bgen:
     block = bgen()
 

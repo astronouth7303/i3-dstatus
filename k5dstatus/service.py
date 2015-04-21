@@ -45,7 +45,7 @@ class BlockManager(dbus.service.Object):
         """
 
         if 'name' in defaults:
-            bid = defaults['name']
+            bid = defaults['name'].replace('-', '')
         else:
             bid = "block"
 

@@ -40,7 +40,7 @@ def show_block(block):
             full_text = full_text.replace('%count', str(len(scratchpad)))
 
     print(full_text)
-    block.Set('full_text', full_text)
+    block.Update({'full_text': full_text})
 
 
 def on_event(i3, e):
@@ -49,8 +49,8 @@ def on_event(i3, e):
 
 
 with make_block(
-    "scratchpad",
-    {"name": "scratchpad", "markup": "pango"}
+    name="scratchpad",
+    markup="pango"
 ) as bgen:
     block = bgen()
 
