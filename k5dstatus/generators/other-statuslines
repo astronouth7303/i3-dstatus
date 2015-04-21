@@ -9,14 +9,7 @@ from k5dstatus.utils import get_manager, get_block
 
 k5dstatus = get_manager()
 
-config = k5dstatus.GetConfig('other-statuslines')
-statuslines = config.get('statuslines', ['i3status -c ~/.i3/i3status.conf'])
-
-if 'statuslines' in config:
-    if isinstance(config, str):
-        statuslines = [config]
-    if isinstance(config, list):
-        statuslines = config
+statuslines = k5dstatus.GetConfig('other-statuslines') or ['i3status']
 
 
 class OtherStatusline(Thread):
