@@ -7,8 +7,10 @@ from dbus.mainloop.glib import DBusGMainLoop
 from .service import BlockManager
 from .barproto import BarManager, InputParser
 from .procman import run_from_config
-from .gbulb import gbulb  # Uggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhh
-
+try:
+    import gpotato
+except ImportError:
+    pass
 
 def start():
     """

@@ -1,12 +1,12 @@
 #!/bin/sh
 
-./i3-dstatus &
+./k5-dstatus &
 
 sleep 1s
 
-dbus-send --session --dest=com.astro73.k5dstatus --type=method_call /com/astro73/k5dstatus \
-        com.astro73.k5dstatus.Manager.create_block string:'spam' dict:string:string:full_text,'Spam!'
-dbus-send --session --dest=com.astro73.k5dstatus --type=method_call /com/astro73/k5dstatus \
-        com.astro73.k5dstatus.Manager.create_block string:'eggs' dict:string:string:full_text,'Eggs!'
+dbus-send --print-reply --session --dest=com.astro73.k5dstatus --type=method_call /com/astro73/k5dstatus \
+        com.astro73.k5dstatus.Manager.CreateBlock string:'spam' dict:string:string:full_text,'Spam!'
+dbus-send --print-reply --session --dest=com.astro73.k5dstatus --type=method_call /com/astro73/k5dstatus \
+        com.astro73.k5dstatus.Manager.CreateBlock string:'eggs' dict:string:string:full_text,'Eggs!'
 
 wait %1

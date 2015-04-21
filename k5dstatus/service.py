@@ -32,7 +32,7 @@ class BlockManager(dbus.service.Object):
         self.config = config
 
         # Can't do this statically due to instances
-        self.blockchanged.handler(self.block_changed)
+        self.blockchanged.handler(self.BlockChanged)
 
     @dbus.service.signal(INTERFACE, signature="o")
     def BlockChanged(self, block):
@@ -142,7 +142,7 @@ class Block(dbus.service.Object):
         self._props = {}
 
         # We can safely ignore the events this generates, because nobody's had the chance to attach to our events yet.
-        self.update(props)
+        self.Update(props)
 
     @dbus.service.signal(INTERFACE, signature="iiu")
     def Click(self, x, y, button):
