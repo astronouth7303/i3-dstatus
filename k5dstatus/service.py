@@ -50,7 +50,7 @@ class BlockManager(dbus.service.Object):
         #      name | n==n | False
         # name+inst | n==n | n==n&&i==i
         if 'ordinal' not in props and 'name' in props:
-            for ordinal, ni in self.config.get('ordinals', {}).values():
+            for ordinal, ni in self.config.get('ordinals', {}).items():
                 if isinstance(ni, str):
                     # Config only has name, don't care about block
                     if props['name'] == ni:
@@ -122,7 +122,7 @@ class BlockManager(dbus.service.Object):
         """
         Yield the blocks in their defined order
         """
-        for block in sorted(self.blocks.values(), key=lambda b: b.order):
+        for block in sorted(self.blocks.values(), key=lambda b: b.ordinal):
             yield block
 
     @dbus.service.method(INTERFACE, in_signature='s', out_signature='v')
@@ -159,7 +159,7 @@ class Block(dbus.service.Object):
         'separator_block_width': ('u', lambda v: isinstance(v, int) and v >= 0),
         'markup'    : ('s', lambda v: v in ('pango', 'none')),
         # Not in the spec; used for our purposes
-        'order'     : ('i', lambda v: isinstance(v, int)),
+        'ordinal'     : ('i', lambda v: isinstance(v, int)),
         }
 
     full_text = ""
