@@ -159,7 +159,7 @@ class Block(dbus.service.Object):
         'separator_block_width': ('u', lambda v: isinstance(v, int) and v >= 0),
         'markup'    : ('s', lambda v: v in ('pango', 'none')),
         # Not in the spec; used for our purposes
-        'ordinal'     : ('i', lambda v: isinstance(v, int)),
+        'ordinal'   : ('i', lambda v: isinstance(v, int)),
         }
 
     full_text = ""
