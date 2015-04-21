@@ -49,7 +49,7 @@ def BarManager(stream, blocks, config):
         "cont_signal": CONT_SIGNAL,
         "click_events": True
     }))
-    stream.write('\n[')
+    stream.write('\n[[]\n')
     stream.flush()
 
     i3bver = barversion()
@@ -59,7 +59,8 @@ def BarManager(stream, blocks, config):
             # Pango Markup is unsupported; strip and hope for the best
             if 'markup' in block and block['markup'] == 'pango':
                 del block['markup']
-                block['full_text'] = stripxml(block['full_text'])
+                if 'full_text' in block:
+                    block['full_text'] = stripxml(block['full_text'])
                 if 'short_text' in block:
                     block['short_text'] = stripxml(block['short_text'])
         return block
@@ -69,11 +70,12 @@ def BarManager(stream, blocks, config):
     @blocks.blockremoved.handler
     def writeout(*_):
         # FIXME: Implement flow control so that updates get lost rather than backed up
+        stream.write(',')
         stream.write(json.dumps([
             fixblock(block.json())
             for block in blocks
         ]))
-        stream.write(',\n')
+        stream.write('\n')
         stream.flush()
 
 
