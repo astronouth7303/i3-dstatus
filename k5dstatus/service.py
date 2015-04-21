@@ -38,21 +38,24 @@ class BlockManager(dbus.service.Object):
     def BlockChanged(self, block):
         pass
 
-    @dbus.service.method(INTERFACE, in_signature="sa{sv}", out_signature="o")
-    def CreateBlock(self, id, defaults=None):
+    @dbus.service.method(INTERFACE, in_signature="a{sv}", out_signature="o")
+    def CreateBlock(self, defaults):
         """
         Create a block with the given ID and return it.
         """
-        if defaults is None:
-            defaults = {}  # Need a new instance each time
 
-        if id in self.blocks:
-            raise KeyError("Block already exists")
+        if 'name' in defaults:
+            bid = defaults['name']
+        else:
+            bid = "block"
 
-        # Set some defaults
-        defaults.setdefault('name', id)
+        if bid in self.blocks:
+            i = 1
+            while bid+i in self.blocks:
+                i += 1
+            bid = bid+i
 
-        self.blocks[id] = blk = Block(id, defaults)
+        self.blocks[bid] = blk = Block(bid, defaults)
         blk.changed.handler(lambda: self.blockchanged(blk))
 
         self.blockadded(blk)
@@ -269,7 +272,7 @@ class Block(dbus.service.Object):
         iface = intro.find("interface[@name='{}']".format(self.INTERFACE))
         for name, (sig, _) in self.__properties__.items():
             etree.SubElement(
-                iface, 'Property',
+                iface, 'pProperty',
                 name=name, type=sig, access="readwrite"
             )
         return etree.tostring(intro)
