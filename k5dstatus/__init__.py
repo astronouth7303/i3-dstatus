@@ -12,6 +12,7 @@ try:
 except ImportError:
     pass
 
+
 def start():
     """
     Orchestrates the start of everything, injects dependencies, sets up event

@@ -39,13 +39,35 @@ class BlockManager(dbus.service.Object):
         pass
 
     @dbus.service.method(INTERFACE, in_signature="a{sv}", out_signature="o")
-    def CreateBlock(self, defaults):
+    def CreateBlock(self, props):
         """
         Create a block with the given ID and return it.
         """
+        # Set some default properties
 
-        if 'name' in defaults:
-            bid = defaults['name'].replace('-', '')
+        # blk / cfg | name | name+inst
+        # -----------------------------
+        #      name | n==n | False
+        # name+inst | n==n | n==n&&i==i
+        if 'ordinal' not in props and 'name' in props:
+            for ordinal, ni in self.config.get('ordinals', {}).values():
+                if isinstance(ni, str):
+                    # Config only has name, don't care about block
+                    if props['name'] == ni:
+                        props['ordinal'] = ordinal
+                        break
+                elif 'instance' not in props:
+                    # Config has name+instance, block only has name
+                    continue
+                else:
+                    # Config has name+instance, block has name+instance
+                    if props['name'] == ni[0] and props['instance'] == ni[1]:
+                        props['ordinal'] = ordinal
+                        break
+
+        # Compute a block ID
+        if 'name' in props:
+            bid = props['name'].replace('-', '')
         else:
             bid = "block"
 
@@ -55,7 +77,8 @@ class BlockManager(dbus.service.Object):
                 i += 1
             bid = bid+str(i)
 
-        self.blocks[bid] = blk = Block(bid, defaults)
+        # Actually create block
+        self.blocks[bid] = blk = Block(bid, props)
         blk.changed.handler(lambda: self.blockchanged(blk))
 
         self.blockadded(blk)
