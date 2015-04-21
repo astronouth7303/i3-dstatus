@@ -23,7 +23,7 @@ class BlockDict(collections.abc.MutableMapping):
         """
         Get the block object.
         """
-        return dbus.Interface(self._block, Block.INTERFACE)
+        return dbus.Interface(self._block, interface)
 
     def __getitem__(self, key):
         return self._block_prop.Get(Block.INTERFACE, key)
