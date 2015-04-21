@@ -5,6 +5,8 @@ import asyncio
 # import ijson
 import signal
 import json
+import subprocess
+import re
 
 # TODO http://i3wm.org/docs/i3bar-protocol.html
 
@@ -15,6 +17,27 @@ CONT_SIGNAL = signal.SIGUSR2
 # process (which could fuck with d-bus) but instead just stop output to i3bar.
 
 # Make sure to register for click events and handle them.
+
+VERSION_RE = re.compile(r'\d+(?:\.\d+)+')
+
+
+def barversion():
+    """barversion_hex() -> tuple(int)
+    Get the version of i3bar as a tuple, eg (4, 10).
+    """
+    verstr = subprocess.check_output(['i3bar', '--version']).decode('utf-8')
+    # i3bar version 4.8 (2014-06-15, branch "4.8") © 2010-2014 Axel Wagner and contributors\n'
+    m = VERSION_RE.search(verstr)
+    if m:
+        ver = m.group(0)
+        return tuple(map(int, ver.split('.')))
+
+
+def stripxml(txt):
+    "Strip Pango markup (aka XML document fragment)"
+    import xml.etree.ElementTree as ET
+    tree = ET.fromstring("<fragment>{}</fragment>".format(txt))
+    return ET.tostring(tree, encoding='utf8', method='text').decode('utf-8')
 
 
 def BarManager(stream, blocks, config):
@@ -30,11 +53,19 @@ def BarManager(stream, blocks, config):
     stream.write('\n[')
     stream.flush()
 
-    def merge(*dicts):
-        rv = {}
-        for d in dicts:
-            rv.update(d)
-        return rv
+    i3bver = barversion()
+
+    def fixblock(block):
+        print(block)
+        if i3bver < (4, 10):
+            # Pango Markup is unsupported; strip and hope for the best
+            if 'markup' in block and block['markup'] == 'pango':
+                del block['markup']
+                block['full_text'] = stripxml(block['full_text'])
+                if 'short_text' in block:
+                    block['short_text'] = stripxml(block['short_text'])
+        print(block)
+        return block
 
     @blocks.blockchanged.handler
     @blocks.blockadded.handler
@@ -42,7 +73,7 @@ def BarManager(stream, blocks, config):
     def writeout(*_):
         # FIXME: Implement flow control so that updates get lost rather than backed up
         stream.write(json.dumps([
-            block.json()
+            fixblock(block.json())
             for block in blocks
         ]))
         stream.write(',\n')
