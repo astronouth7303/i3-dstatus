@@ -293,7 +293,7 @@ class Block(dbus.service.Object):
         iface = intro.find("interface[@name='{}']".format(self.INTERFACE))
         for name, (sig, _) in self.__properties__.items():
             etree.SubElement(
-                iface, 'pProperty',
+                iface, 'property',
                 name=name, type=sig, access="readwrite"
             )
         return etree.tostring(intro)
