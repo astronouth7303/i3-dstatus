@@ -173,7 +173,7 @@ class Block(dbus.service.Object):
     separator = True
     separator_block_width = 9
     markup = 'none'
-    order = 0
+    ordinal = 0
 
     changed = Event("Raised when a property is set")
 
