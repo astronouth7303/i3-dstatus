@@ -18,5 +18,5 @@ with make_block(
         time_string = time.strftime(time_format)
         if time_string != last_time:
             last_time = time_string
-            block.Update({"full_text": time.strftime(time_format)})
+            block["full_text"] = time_string
         time.sleep(1)

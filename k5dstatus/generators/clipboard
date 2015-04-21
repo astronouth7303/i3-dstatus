@@ -25,16 +25,12 @@ def format_clipboard_text(cb_text):
 
 def on_owner_change(clipboard, event):
     cb_text = clipboard.wait_for_text()
-    print("Clipboard", cb_text)
 
     if not cb_text:
         # no clipboard, so clear the block
-        block.Update({"full_text": ""})
+        block["full_text"] = ""
     else:
-        block.Update({
-            "full_text": format_clipboard_text(cb_text),
-            "markup": "pango"
-        })
+        block["full_text"] = format_clipboard_text(cb_text)
 
 cb_text = clipboard.wait_for_text()
 
