@@ -15,7 +15,9 @@ except ImportError:
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('--config', '-c', default='~/.k5dstatus.conf',
-                   help='Config file to load')
+                    help='Config file to load')
+parser.add_argument('generators', nargs='*',
+                    help='Generators to run')
 
 
 def start():
@@ -43,7 +45,7 @@ def start():
     blockman = BarManager(i3bar_blocks, manager, config)
     iparse = InputParser(i3bar_input, manager, config)
 
-    GLib.idle_add(run_from_config, config, sys.argv[1:])
+    GLib.idle_add(run_from_config, config, args.generators)
     # FIXME: Feed blockman, iparse coroutines to event loop
 
     main = GLib.MainLoop()
