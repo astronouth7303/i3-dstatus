@@ -11,15 +11,16 @@ k5dstatus = get_manager()
 
 statuslines = k5dstatus.GetConfig('other-statuslines') or ['i3status']
 
+
 class OtherStatusline(Thread):
     def __init__(self, statusline_path):
-        super().__init__()
+        super().__init__(None, statusline_path)
         self.statusline_path = statusline_path
 
     def run(self):
-        blockpaths = set()
-        try:
-            with Popen(self.statusline_path, stdout=PIPE, shell=True) as proc:
+        with Popen(self.statusline_path, stdout=PIPE, shell=True) as proc:
+            blockpaths = set()
+            try:
                 header = json.loads(str(proc.stdout.readline(), 'UTF-8'))
 
                 if header['version'] != 1:
@@ -29,15 +30,25 @@ class OtherStatusline(Thread):
                 parser = ijson.common.items(ijson.parse(proc.stdout, buf_size=1), 'item')
 
                 for blocks in parser:
+                    thisline = set()
                     for block in blocks:
                         blkpath = k5dstatus.FindOrCreateBlock(block['name'], block.get('instance', ''))
-                        blockpaths.add(blkpath)
+                        thisline.add(blkpath)
                         blk = get_block(blkpath)
-                        blk.Update(block)
-        finally:
-            for blkpath in blockpaths:
-                k5dstatus.RemoveBlock(blkpath)
+                        blk.update(block)
 
+                    for block in blockpaths - thisline:
+                        k5dstatus.RemoveBlock(block)
+                        blockpaths.remove(block)
 
-for statusline in statuslines:
-    OtherStatusline(statusline).start()
+                    blockpaths &= thisline
+            finally:
+                for blkpath in blockpaths:
+                    k5dstatus.RemoveBlock(blkpath)
+
+threads = [OtherStatusline(statusline) for statusline in statuslines]
+for t in threads:
+    t.start()
+
+for t in threads:
+    t.join()
