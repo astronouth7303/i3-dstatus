@@ -55,7 +55,6 @@ def BarManager(stream, blocks, config):
     i3bver = barversion()
 
     def fixblock(block):
-        print(block)
         if i3bver < (4, 10):
             # Pango Markup is unsupported; strip and hope for the best
             if 'markup' in block and block['markup'] == 'pango':
@@ -63,7 +62,6 @@ def BarManager(stream, blocks, config):
                 block['full_text'] = stripxml(block['full_text'])
                 if 'short_text' in block:
                     block['short_text'] = stripxml(block['short_text'])
-        print(block)
         return block
 
     @blocks.blockchanged.handler
