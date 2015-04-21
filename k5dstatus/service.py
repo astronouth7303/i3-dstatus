@@ -51,9 +51,9 @@ class BlockManager(dbus.service.Object):
 
         if bid in self.blocks:
             i = 1
-            while bid+i in self.blocks:
+            while bid+str(i) in self.blocks:
                 i += 1
-            bid = bid+i
+            bid = bid+str(i)
 
         self.blocks[bid] = blk = Block(bid, defaults)
         blk.changed.handler(lambda: self.blockchanged(blk))
@@ -67,12 +67,33 @@ class BlockManager(dbus.service.Object):
         """
         Remove a block.
         """
-        id = blockpath[len(PATH_PREFIX)+1:]
-        block = self.blocks[id]
+        bid = blockpath[len(PATH_PREFIX)+1:]
+        block = self.blocks[bid]
         # XXX: Will dbus hand us a real object or just a path?
         block.remove_from_connection()
-        del self.blocks[id]
+        del self.blocks[bid]
         self.blockremoved(block)
+
+    @dbus.service.method(INTERFACE, in_signature="ss", out_signature="o")
+    def FindBlock(self, name, instance):
+        """
+        Find a block.
+        """
+        for blk in self.blocks.values():
+            if (blk.name == name) and (blk.instance == instance if instance else True):
+                return blk
+        else:
+            raise KeyError("Unknown name/instance: {!r}, {!r}".format(name, instance))
+
+    @dbus.service.method(INTERFACE, in_signature="ss", out_signature="o")
+    def FindOrCreateBlock(self, name, instance):
+        """
+        Find a block, or create it if it doesn't exist.
+        """
+        try:
+            return self.FindBlock(name, instance)
+        except KeyError:
+            return self.CreateBlock({'name': name, 'instance': instance})
 
     def __iter__(self):
         """

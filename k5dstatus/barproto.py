@@ -42,7 +42,6 @@ def stripxml(txt):
 
 def BarManager(stream, blocks, config):
     # FIXME: Make this a coroutine
-    # FIXME: Use a streaming JSON writer?
     # Set signal handlers
     stream.write(json.dumps({
         "version": 1,
@@ -78,6 +77,7 @@ def BarManager(stream, blocks, config):
         ]))
         stream.write(',\n')
         stream.flush()
+
 
 def InputParser(stream, blocks, config):
     return NotImplemented

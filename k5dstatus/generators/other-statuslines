@@ -4,17 +4,13 @@ import ijson.backends.yajl2 as ijson
 from subprocess import Popen, PIPE
 import json
 import sys
-import dbus
 from threading import Thread
+from k5dstatus.utils import get_manager, get_block
 
-k5dstatus = dbus.Interface(dbus.SessionBus().get_object(
-                           'com.astro73.k5dstatus',
-                           '/com/astro73/k5dstatus'),
-                           'com.astro73.k5dstatus.Manager')
+k5dstatus = get_manager()
 
-statuslines = ['i3status']
-
-config = k5dstatus.get_config('other-statuslines')
+config = k5dstatus.GetConfig('other-statuslines')
+statuslines = config.get('statuslines', ['i3status -c ~/.i3/i3status.conf'])
 
 if 'statuslines' in config:
     if isinstance(config, str):
@@ -25,33 +21,25 @@ if 'statuslines' in config:
 
 class OtherStatusline(Thread):
     def __init__(self, statusline_path):
+        super().__init__()
         self.statusline_path = statusline_path
-        Thread.__init__(self)
 
     def run(self):
-        with Popen(self.statusline_path, stdout=PIPE) as proc:
+        with Popen(self.statusline_path, stdout=PIPE, shell=True) as proc:
             header = json.loads(str(proc.stdout.readline(), 'UTF-8'))
 
             if header['version'] != 1:
                 print('other-statuslines: invalid status header', sys.stderr)
                 return
 
-            parser = ijson.parse(proc.stdout, buf_size=1)
+            parser = ijson.common.items(ijson.parse(proc.stdout, buf_size=1), 'item')
 
-            block = {}
-            last_key = ''
+            for blocks in parser:
+                for block in blocks:
+                    blkpath = k5dstatus.FindOrCreateBlock(block['name'], block.get('instance', ''))
+                    blk = get_block(blkpath)
+                    blk.Update(block)
 
-            for prefix, event, value in parser:
-                if event == 'start_map':
-                    block = {}
-                elif event == 'map_key':
-                    last_key = value
-                elif event in ['null', 'boolean', 'string', 'number']:
-                    block[last_key] = value
-                elif event == 'end_map':
-                    # XXX: we probably need a method to show more than one
-                    # block
-                    k5dstatus.show_block(block)
 
 for statusline in statuslines:
     OtherStatusline(statusline).start()
