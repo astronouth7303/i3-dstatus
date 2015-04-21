@@ -241,8 +241,12 @@ class Block(dbus.service.Object):
             _, validate = self.__properties__[name]
             if not validate(value):
                 raise ValueError("Validation failed")
-            self._changed(name, value)
+
         super().__setattr__(name, value)
+        
+        if name in self.__properties__:
+            self._changed(name, value)
+
 
     @dbus.service.method(INTERFACE, in_signature='s', out_signature='v')
     def GetProp(self, name):
