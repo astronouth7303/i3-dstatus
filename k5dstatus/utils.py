@@ -3,8 +3,10 @@ Utility functions for generators.
 """
 import dbus
 import collections.abc
+import xml.etree.ElementTree as etree
+import posixpath
 from .service import DBUS_SERVICE, PATH_PREFIX, BlockManager, Block
-__all__ = 'get_manager', 'get_block', 'get_config', 'make_block'
+__all__ = 'get_manager', 'get_block', 'get_config', 'make_block', 'list_blocks'
 
 
 class BlockDict(collections.abc.MutableMapping):
@@ -48,6 +50,8 @@ class BlockDict(collections.abc.MutableMapping):
 
     # TODO: Wrap items() so that it doesn't make repeated d-bus calls for values
 
+    # Some D-bus stuff
+
 
 def get_manager():
     return dbus.Interface(
@@ -89,3 +93,20 @@ class make_block:
 
     def __exit__(self, *_):
         self.service.RemoveBlock(self.blockpath)
+
+
+def list_blocks():
+    k5 = dbus.Interface(
+        dbus.SessionBus().get_object(DBUS_SERVICE, PATH_PREFIX),
+        "org.freedesktop.DBus.Introspectable"
+    )
+    intro = etree.fromstring(
+        k5.Introspect()
+    )
+    for node in intro.findall("node"):
+        yield BlockDict(
+            dbus.SessionBus().get_object(
+                DBUS_SERVICE,
+                posixpath.join(k5.object_path, node.attrib['name'])
+            )
+        )
