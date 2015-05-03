@@ -32,14 +32,13 @@ def on_owner_change(clipboard, event):
     else:
         block["full_text"] = format_clipboard_text(cb_text)
 
-cb_text = clipboard.wait_for_text()
-
 with make_block(
     name="clipboard",
-    full_text=format_clipboard_text(cb_text),
     markup="pango"
 ) as bgen:
     block = bgen()
+
+    on_owner_change(clipboard, None)
 
     clipboard.connect('owner-change', on_owner_change)
 
