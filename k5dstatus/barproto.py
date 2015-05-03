@@ -63,6 +63,8 @@ def BarManager(stream, blocks, config):
                     block['full_text'] = stripxml(block['full_text'])
                 if 'short_text' in block:
                     block['short_text'] = stripxml(block['short_text'])
+        if 'full_text' not in block:
+            block['full_text'] = ""
         return block
 
     @blocks.blockchanged.handler
